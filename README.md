@@ -1,4 +1,4 @@
-echo "# UV-Vis Data Analysis Tool
+# UV-Vis Data Analysis Tool
 
 A Python application for analyzing UV-Vis data. This tool can read CSV files from UV-Vis instruments, process absorbance and transmittance data, and generate plots and CSV files for further analysis.
 
