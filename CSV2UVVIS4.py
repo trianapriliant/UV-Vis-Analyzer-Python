@@ -197,7 +197,7 @@ graph_frame.grid(row=6, column=0, columnspan=3, pady=10)
 # Tambahkan label untuk credit
 credit_label = Label(
     root, 
-    text="made with ❤️ by rynn ~ personal use for physics of materials", 
+    text="v1.4 | made with ❤️ by rynn ~ personal use for physics of materials", 
     font=("Segoe UI Emoji", 8),  # Gunakan font yang mendukung emoji
     fg="gray"  # 
 )
