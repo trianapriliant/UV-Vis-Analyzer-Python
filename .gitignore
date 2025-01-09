@@ -1,0 +1,41 @@
+# Abaikan virtual environment
+myenv/
+
+# Abaikan folder build dan distribusi
+build/
+dist/
+
+# Abaikan file executable (EXE)
+*.exe
+
+# Abaikan file cache Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Abaikan file sementara dan log
+*.tmp
+*.log
+
+# Abaikan file spesifik yang tidak perlu diunggah
+CSV2UVVIS4.spec
+GabunganAbsSamplel/
+AbsSamplel.csv
+grafik_lamda_absorbansi.png
+
+# Abaikan folder data sementara (jika ada)
+csv/
+src_version/
+
+# Abaikan file lingkungan (environment files)
+.env
+.env.local
+
+# Abaikan file IDE (misalnya, PyCharm, VSCode)
+.idea/
+.vscode/
+
+# Abaikan file lain yang tidak perlu
+CACHEDIR.TAG
+pyvenv.cfg
