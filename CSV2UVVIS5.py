@@ -145,12 +145,12 @@ input_frame.grid(row=0, column=0, padx=10, pady=5, sticky="w")
 
 Label(input_frame, text="Folder Path:").grid(row=0, column=0, padx=5, pady=2, sticky="w")
 folder_path_var = StringVar()
-Entry(input_frame, textvariable=folder_path_var, width=40).grid(row=0, column=1, padx=5, pady=2)
+Entry(input_frame, textvariable=folder_path_var, width=30).grid(row=0, column=1, padx=5, pady=2)
 Button(input_frame, text="Browse", command=select_folder).grid(row=0, column=2, padx=5, pady=2)
 
 Label(input_frame, text="Sample Names:").grid(row=1, column=0, padx=5, pady=2, sticky="w")
 sample_names_var = StringVar()
-sample_names_entry = Entry(input_frame, textvariable=sample_names_var, width=40, fg="grey")
+sample_names_entry = Entry(input_frame, textvariable=sample_names_var, width=30, fg="grey")
 sample_names_entry.grid(row=1, column=1, padx=5, pady=2)
 sample_names_entry.insert(0, "Pisahkan dengan koma")  # Tambahkan placeholder
 sample_names_entry.bind("<FocusIn>", on_entry_click)  # Ketika Entry diklik
@@ -158,7 +158,7 @@ sample_names_entry.bind("<FocusOut>", on_focus_out)   # Ketika focus keluar dari
 
 Label(input_frame, text="Graph Title:").grid(row=2, column=0, padx=5, pady=2, sticky="w")
 graph_title_var = StringVar()
-Entry(input_frame, textvariable=graph_title_var, width=40).grid(row=2, column=1, padx=5, pady=2)
+Entry(input_frame, textvariable=graph_title_var, width=30).grid(row=2, column=1, padx=5, pady=2)
 
 Label(input_frame, text="Pilih Alat:").grid(row=3, column=0, padx=5, pady=2, sticky="w")
 alat_var = IntVar(value=1)
@@ -170,17 +170,17 @@ plot_type = IntVar(value=1)
 Radiobutton(input_frame, text="Absorbansi", variable=plot_type, value=1).grid(row=4, column=1, padx=5, pady=2, sticky="w")
 Radiobutton(input_frame, text="Transmitansi", variable=plot_type, value=2).grid(row=4, column=2, padx=5, pady=2, sticky="w")
 
-Label(input_frame, text="Ukuran Grafik (Lebar):").grid(row=5, column=0, padx=5, pady=2, sticky="w")
+Label(input_frame, text="Lebar Grafik:").grid(row=5, column=0, padx=5, pady=2, sticky="w")
 fig_width_scale = Scale(input_frame, from_=4, to=20, orient="horizontal")
 fig_width_scale.set(8)
 fig_width_scale.grid(row=5, column=1, padx=5, pady=2, sticky="w")
 
-Label(input_frame, text="Ukuran Grafik (Tinggi):").grid(row=6, column=0, padx=5, pady=2, sticky="w")
-fig_height_scale = Scale(input_frame, from_=4, to=20, orient="horizontal")
+Label(input_frame, text="Tinggi Grafik:").grid(row=5, column=2, padx=5, pady=2, sticky="w")
+fig_height_scale = Scale(input_frame, from_=2, to=16, orient="horizontal")
 fig_height_scale.set(4)
-fig_height_scale.grid(row=6, column=1, padx=5, pady=2, sticky="w")
+fig_height_scale.grid(row=5, column=3, padx=5, pady=2, sticky="w")
 
-Button(input_frame, text="Process Data", command=process_data).grid(row=7, column=0, columnspan=3, pady=5)
+Button(input_frame, text="Process Data", command=process_data).grid(row=7, column=0, columnspan=4, pady=5)
 
 # Frame untuk grafik
 graph_frame = Frame(root)
