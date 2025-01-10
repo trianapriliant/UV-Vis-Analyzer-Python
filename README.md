@@ -12,7 +12,7 @@ A Python application for analyzing UV-Vis data. This tool can read CSV files fro
 ## Installation
 1. Clone this repository:
    \`\`\`bash
-   git clone https://github.com/username/uv-vis-analysis.git
+   git clone https://github.com/trianapriliant/UV-Vis-Analyzer-Python.git
    \`\`\`
 2. Navigate to the project folder:
    \`\`\`bash
