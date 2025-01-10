@@ -40,7 +40,7 @@ def process_data():
             if df.shape[1] >= 3:
                 df = df.iloc[:, :3]
             else:
-                messagebox.showerror("Error", f"File {file_path} memiliki kurang dari 3 kolom!, coba pilih alat lain")
+                messagebox.showerror("Error", f"File {file_path} memiliki csv dengan format berbeda, coba pilih alat lain")
                 return
             df.columns = ['Nomor', 'Lambda', 'Absorbansi']
         else:
@@ -48,7 +48,7 @@ def process_data():
             if df.shape[1] >= 2:
                 df = df.iloc[:, :2]
             else:
-                messagebox.showerror("Error", f"File {file_path} memiliki kurang dari 2 kolom!, coba pilih alat lain")
+                messagebox.showerror("Error", f"File {file_path} memiliki csv dengan format berbeda, coba pilih alat lain")
                 return
             df.columns = ['Lambda', 'Absorbansi']
             df['Nomor'] = range(1, len(df) + 1)
@@ -123,16 +123,28 @@ def select_folder():
     folder = filedialog.askdirectory()
     folder_path_var.set(folder)
 
+def on_entry_click_folder(event):
+    """Fungsi yang dipanggil ketika Entry folder path diklik."""
+    if folder_path_entry.get() == "folder berisi file-file csv":
+        folder_path_entry.delete(0, "end")  # Hapus placeholder
+        folder_path_entry.config(fg="black")  # Ubah warna teks ke hitam
+
+def on_focus_out_folder(event):
+    """Fungsi yang dipanggil ketika focus keluar dari Entry folder path."""
+    if folder_path_entry.get() == "":
+        folder_path_entry.insert(0, "folder berisi file-file csv")  # Tambahkan placeholder
+        folder_path_entry.config(fg="grey")  # Ubah warna teks ke abu-abu
+
 def on_entry_click(event):
     """Fungsi yang dipanggil ketika Entry diklik."""
-    if sample_names_entry.get() == "Pisahkan dengan koma":
+    if sample_names_entry.get() == "pisahkan dengan koma":
         sample_names_entry.delete(0, "end")  # Hapus placeholder
         sample_names_entry.config(fg="black")  # Ubah warna teks ke hitam
 
 def on_focus_out(event):
     """Fungsi yang dipanggil ketika focus keluar dari Entry."""
     if sample_names_entry.get() == "":
-        sample_names_entry.insert(0, "Pisahkan dengan koma")  # Tambahkan placeholder
+        sample_names_entry.insert(0, "pisahkan dengan koma")  # Tambahkan placeholder
         sample_names_entry.config(fg="grey")  # Ubah warna teks ke abu-abu
 
 def on_close():
@@ -151,14 +163,19 @@ input_frame.grid(row=0, column=0, padx=10, pady=5, sticky="w")
 
 Label(input_frame, text="Folder Path:").grid(row=0, column=0, padx=5, pady=2, sticky="w")
 folder_path_var = StringVar()
-Entry(input_frame, textvariable=folder_path_var, width=40).grid(row=0, column=1, padx=5, pady=2)
+folder_path_entry = Entry(input_frame, textvariable=folder_path_var, width=40, fg="grey")
+folder_path_entry.grid(row=0, column=1, padx=5, pady=2)
+folder_path_entry.insert(0, "folder berisi file-file csv")  # Tambahkan placeholder
+folder_path_entry.bind("<FocusIn>", on_entry_click_folder)  # Ketika Entry diklik
+folder_path_entry.bind("<FocusOut>", on_focus_out_folder)   # Ketika focus keluar dari Entry
+
 Button(input_frame, text="Browse", command=select_folder).grid(row=0, column=2, padx=5, pady=2)
 
 Label(input_frame, text="Sample Names:").grid(row=1, column=0, padx=5, pady=2, sticky="w")
 sample_names_var = StringVar()
 sample_names_entry = Entry(input_frame, textvariable=sample_names_var, width=40, fg="grey")
 sample_names_entry.grid(row=1, column=1, padx=5, pady=2)
-sample_names_entry.insert(0, "Pisahkan dengan koma")  # Tambahkan placeholder
+sample_names_entry.insert(0, "pisahkan dengan koma")  # Tambahkan placeholder
 sample_names_entry.bind("<FocusIn>", on_entry_click)  # Ketika Entry diklik
 sample_names_entry.bind("<FocusOut>", on_focus_out)   # Ketika focus keluar dari Entry
 
