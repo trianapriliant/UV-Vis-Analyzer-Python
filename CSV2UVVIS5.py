@@ -188,15 +188,15 @@ fig_height_scale.grid(row=5, column=3, padx=5, pady=2, sticky="w")
 
 # Checkbutton untuk menampilkan % degradasi
 show_degradasi = IntVar(value=1)  # Default: Tampilkan % degradasi
-Checkbutton(input_frame, text="Tampilkan % Degradasi", variable=show_degradasi).grid(row=6, column=0, columnspan=4, pady=2, sticky="w")
+Checkbutton(input_frame, text="% Degradasi", variable=show_degradasi).grid(row=6, column=0, sticky="ew", padx=2, pady=2)
 
 # Checkbutton untuk menampilkan titik puncak
 show_peak_points = IntVar(value=1)  # Default: Tampilkan titik puncak
-Checkbutton(input_frame, text="Tampilkan Titik Puncak", variable=show_peak_points).grid(row=7, column=0, columnspan=4, pady=2, sticky="w")
+Checkbutton(input_frame, text="Titik Puncak", variable=show_peak_points).grid(row=6, column=1, sticky="ew", padx=2, pady=2)
 
 # Checkbutton untuk menampilkan legend
 show_legend = IntVar(value=1)  # Default: Tampilkan legend
-Checkbutton(input_frame, text="Tampilkan Legend", variable=show_legend).grid(row=8, column=0, columnspan=4, pady=2, sticky="w")
+Checkbutton(input_frame, text="Legend", variable=show_legend).grid(row=6, column=2, sticky="ew", padx=2, pady=2)
 
 Button(input_frame, text="Process Data", command=process_data).grid(row=9, column=0, columnspan=4, pady=5)
 

@@ -51,7 +51,7 @@ def process_data():
             if df.shape[1] >= 3:
                 df = df.iloc[:, :3]
             else:
-                messagebox.showerror("Error", f"File {file_path} memiliki kurang dari 3 kolom!")
+                messagebox.showerror("Error", f"File {file_path} memiliki kurang dari 3 kolom!, coba pilih alat lain")
                 return
             
             df.columns = ['Nomor', 'Lambda', 'Absorbansi']
@@ -60,7 +60,7 @@ def process_data():
             if df.shape[1] >= 2:
                 df = df.iloc[:, :2]
             else:
-                messagebox.showerror("Error", f"File {file_path} memiliki kurang dari 2 kolom!")
+                messagebox.showerror("Error", f"File {file_path} memiliki kurang dari 2 kolom!, coba pilih alat lain")
                 return
             
             df.columns = ['Lambda', 'Absorbansi']
@@ -101,7 +101,7 @@ def process_data():
             toolbar.pack_forget()
         
         # Buat grafik baru
-        fig, ax = plt.subplots(figsize=(10, 6))
+        fig, ax = plt.subplots(figsize=(8, 4))
         for i, df in enumerate(data_frames):
             if show_absorbance:
                 ax.plot(df['Lambda'], df['Absorbansi'], label=f"{sample_names[i]} (Absorbansi)")
@@ -110,20 +110,19 @@ def process_data():
                 max_abs = df['Absorbansi'].iloc[abs_max_idx]
                 ax.scatter(max_lambda, max_abs, color='black', zorder=1, s=2)
                 ax.text(max_lambda, max_abs, f'{max_abs:.2f}', color='black', fontsize=8, ha='left', va='bottom')
-                ax.legend(fontsize=6)
             else:
                 ax.plot(df['Lambda'], df['Transmitansi'], label=f"{sample_names[i]} (Transmitansi)")
         
         degradasi_text = '\n'.join([f'% Degradasi {sample_names[0]} ke {sample_names[i+1]} Jam: {degradasi_values[i]:.2f}%' 
                                     for i in range(len(degradasi_values))])
         ax.text(0.05, 0.95, degradasi_text, transform=ax.transAxes,
-                fontsize=9, color='black', ha='left', va='top', bbox=dict(facecolor='white', edgecolor='black', boxstyle='round,pad=0.25'))
-        
+                fontsize=8, color='black', ha='left', va='top', bbox=dict(facecolor='white', edgecolor='black', boxstyle='round,pad=0.25'))
+        # Menambahkan legenda dengan font yang lebih kecil
         # Set label sumbu x dan y
         ax.set_xlabel('Panjang Gelombang (nm)')  # Sumbu x
         ax.set_ylabel('Absorbansi' if show_absorbance else 'Transmitansi')  # Sumbu y
         ax.set_title(graph_title)  # Judul grafik dari input pengguna
-        ax.legend()
+        ax.legend(fontsize=8)
         ax.grid(True)
         
         # Tampilkan grafik di GUI
