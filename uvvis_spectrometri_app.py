@@ -137,14 +137,14 @@ def on_focus_out_folder(event):
 
 def on_entry_click(event):
     """Fungsi yang dipanggil ketika Entry diklik."""
-    if sample_names_entry.get() == "pisahkan dengan koma":
+    if sample_names_entry.get() == "pisahkan nama-nama sampel dengan koma":
         sample_names_entry.delete(0, "end")  # Hapus placeholder
         sample_names_entry.config(fg="black")  # Ubah warna teks ke hitam
 
 def on_focus_out(event):
     """Fungsi yang dipanggil ketika focus keluar dari Entry."""
     if sample_names_entry.get() == "":
-        sample_names_entry.insert(0, "pisahkan dengan koma")  # Tambahkan placeholder
+        sample_names_entry.insert(0, "pisahkan nama-nama sampel dengan koma")  # Tambahkan placeholder
         sample_names_entry.config(fg="grey")  # Ubah warna teks ke abu-abu
 
 def on_close():
@@ -175,7 +175,7 @@ Label(input_frame, text="Sample Names:").grid(row=1, column=0, padx=5, pady=2, s
 sample_names_var = StringVar()
 sample_names_entry = Entry(input_frame, textvariable=sample_names_var, width=40, fg="grey")
 sample_names_entry.grid(row=1, column=1, padx=5, pady=2)
-sample_names_entry.insert(0, "pisahkan dengan koma")  # Tambahkan placeholder
+sample_names_entry.insert(0, "pisahkan nama-nama sampel dengan koma")  # Tambahkan placeholder
 sample_names_entry.bind("<FocusIn>", on_entry_click)  # Ketika Entry diklik
 sample_names_entry.bind("<FocusOut>", on_focus_out)   # Ketika focus keluar dari Entry
 
@@ -223,7 +223,7 @@ graph_frame.grid(row=1, column=0, padx=10, pady=5, sticky="nsew")
 
 credit_label = Label(
     root, 
-    text="v1.4 | made with ❤️ by rynn ~ personal use for physics of materials", 
+    text="v1.5 | made with ❤️ by rynn ~ personal use for physics of materials", 
     font=("Segoe UI Emoji", 8),
     fg="gray"
 )
