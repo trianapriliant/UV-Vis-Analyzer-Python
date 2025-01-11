@@ -4,7 +4,9 @@ AnalisisApp/
 │   ├── __init__.py
 │   ├── gui.py
 │   ├── processing.py
-│   └── plotting.py
+│   ├── plotting.py
+│   ├── analysis.py
+│   └── utils.py
 │
 ├── UVVisDRSAnalyzer/       # Modul untuk analisis UV-Vis DRS
 │   ├── __init__.py

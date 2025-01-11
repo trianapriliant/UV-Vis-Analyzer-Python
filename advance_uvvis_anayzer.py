@@ -132,7 +132,7 @@ class UVVisAnalyzer:
         # Credit Label
         credit_label = Label(
             self.root,
-            text="v1.5 | made with ❤️ by rynn ~ personal use for physics of materials, kalo mau donasi boleh hehe ke 083862181940",
+            text="v1.5 - under development | made with ❤️ by rynn ~ personal use for physics of materials",
             font=("Segoe UI Emoji", 8),
             fg="gray"
         )
