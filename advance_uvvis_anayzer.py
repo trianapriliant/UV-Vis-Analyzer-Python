@@ -1,23 +1,49 @@
 import os
 import datetime
+import time
+import itertools
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-from tkinter import Tk, Label, Entry, Button, filedialog, messagebox, StringVar, Frame, Radiobutton, IntVar, Scale, Checkbutton, Menu
+from tkinter import Tk, Label, Entry, Button, filedialog, messagebox, StringVar, Frame, Radiobutton, IntVar, Scale, Checkbutton, Menu, ttk, Toplevel
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 from scipy.optimize import curve_fit
+from fpdf import FPDF
 
 class UVVisAnalyzer:
     def __init__(self, root):
         self.root = root
+        self.root.withdraw()  # Sembunyikan jendela utama sementara
         self.root.title("Absorbance Plot UV-Vis")
         self.data_frames = None
         self.degradasi_values = None
         self.canvas = None
         self.toolbar = None
 
-        # Inisialisasi GUI
-        self.setup_gui()
+        # Tampilkan splash screen
+        self.splash = Toplevel(root)
+        self.splash.title("Loading...")
+        self.splash.geometry("300x100")
+        Label(self.splash, text="Membuka Aplikasi, Harap Tunggu...", font=("Arial", 12)).pack(pady=10)
+        self.progress = ttk.Progressbar(self.splash, orient="horizontal", length=200, mode="determinate")
+        self.progress.pack(pady=10)
+        self.splash.update()  # Perbarui tampilan splash screen
+
+        # Mulai proses loading tanpa blocking
+        self.loading_progress = 0
+        self.update_progress()
+
+    def update_progress(self):
+        if self.loading_progress <= 100:
+            self.progress['value'] = self.loading_progress
+            self.splash.update()
+            self.loading_progress += 10
+            self.root.after(20, self.update_progress)  # Panggil kembali setelah 20 ms
+        else:
+            # Setup GUI utama setelah loading selesai
+            self.setup_gui()
+            self.splash.destroy()
+            self.root.deiconify()  # Tampilkan jendela utama
 
     def setup_gui(self):
         # Membuat Menu
@@ -35,6 +61,7 @@ class UVVisAnalyzer:
         menu_bar.add_cascade(label="Eksport", menu=eksport_menu)
         eksport_menu.add_command(label="Eksport CSV", command=self.eksport_csv)
         eksport_menu.add_command(label="Eksport Gambar", command=self.eksport_gambar)
+        eksport_menu.add_command(label="Export Report", command=self.export_report)
         
         # Frame untuk input
         input_frame = Frame(self.root)
@@ -105,7 +132,7 @@ class UVVisAnalyzer:
         # Credit Label
         credit_label = Label(
             self.root,
-            text="v1.5 | made with ❤️ by rynn ~ personal use for physics of materials",
+            text="v1.5 | made with ❤️ by rynn ~ personal use for physics of materials, kalo mau donasi boleh hehe ke 083862181940",
             font=("Segoe UI Emoji", 8),
             fg="gray"
         )
@@ -376,6 +403,79 @@ class UVVisAnalyzer:
             messagebox.showinfo("Sukses", f"Gambar grafik berhasil disimpan di: {file_path}")
         except Exception as e:
             messagebox.showerror("Error", f"Gagal menyimpan gambar grafik: {str(e)}")
+            
+    def export_report(self):
+        if self.data_frames is None or self.canvas is None:
+            messagebox.showerror("Error", "Tidak ada data atau grafik yang tersedia! Harap proses data terlebih dahulu.")
+            return
+
+        # Meminta pengguna memilih lokasi penyimpanan
+        file_path = filedialog.asksaveasfilename(
+            defaultextension=".pdf",
+            filetypes=[("PDF Files", "*.pdf")],
+            title="Simpan Laporan PDF"
+        )
+        if not file_path:
+            return  # Pengguna membatalkan dialog
+
+        try:
+            # Buat objek PDF
+            pdf = FPDF()
+            pdf.add_page()
+            pdf.set_font("Arial", size=12)
+
+            # Judul Laporan
+            pdf.cell(200, 10, txt="Laporan Analisis UV-Vis", ln=True, align="C")
+            pdf.ln(10)
+
+            # Informasi Umum
+            pdf.set_font("Arial", size=10)
+            pdf.cell(200, 10, txt=f"Judul Grafik: {self.graph_title_var.get()}", ln=True)
+            pdf.cell(200, 10, txt=f"Nama Sampel: {self.sample_names_var.get()}", ln=True)
+            pdf.ln(10)
+
+            # Simpan Grafik Transmitansi ke File Sementara
+            temp_transmitansi_path = "temp_transmitansi.png"
+            self.plot_graph(show_absorbance=False)  # Plot grafik transmitansi
+            self.canvas.figure.savefig(temp_transmitansi_path, dpi=300, bbox_inches="tight")
+
+            # Tambahkan Grafik Transmitansi ke PDF
+            pdf.cell(200, 10, txt="Grafik Transmitansi", ln=True)
+            pdf.image(temp_transmitansi_path, x=10, y=None, w=180)
+            pdf.ln(10)
+
+            # Simpan Grafik Kinetika Degradasi ke File Sementara
+            temp_kinetika_path = "temp_kinetika.png"
+            self.kinetika_degradasi()  # Plot grafik kinetika degradasi
+            self.canvas.figure.savefig(temp_kinetika_path, dpi=300, bbox_inches="tight")
+
+            # Tambahkan Grafik Kinetika Degradasi ke PDF
+            pdf.cell(200, 10, txt="Grafik Kinetika Degradasi", ln=True)
+            pdf.image(temp_kinetika_path, x=10, y=None, w=180)
+            pdf.ln(10)
+
+            # Simpan Grafik Konsentrasi Relatif ke File Sementara
+            temp_konsentrasi_path = "temp_konsentrasi.png"
+            self.konsentrasi_relatif()  # Plot grafik konsentrasi relatif
+            self.canvas.figure.savefig(temp_konsentrasi_path, dpi=300, bbox_inches="tight")
+
+            # Tambahkan Grafik Konsentrasi Relatif ke PDF
+            pdf.cell(200, 10, txt="Grafik Konsentrasi Relatif", ln=True)
+            pdf.image(temp_konsentrasi_path, x=10, y=None, w=180)
+            pdf.ln(10)
+
+            # Simpan PDF
+            pdf.output(file_path)
+            messagebox.showinfo("Sukses", f"Laporan berhasil disimpan di: {file_path}")
+
+            # Hapus file gambar sementara
+            os.remove(temp_transmitansi_path)
+            os.remove(temp_kinetika_path)
+            os.remove(temp_konsentrasi_path)
+
+        except Exception as e:
+            messagebox.showerror("Error", f"Gagal menyimpan laporan PDF: {str(e)}")
+        
 if __name__ == "__main__":
     root = Tk()
     app = UVVisAnalyzer(root)

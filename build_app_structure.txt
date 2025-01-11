@@ -1,0 +1,27 @@
+AnalisisApp/
+│
+├── UVVisAnalyzer/          # Modul untuk analisis UV-Vis
+│   ├── __init__.py
+│   ├── gui.py
+│   ├── processing.py
+│   └── plotting.py
+│
+├── UVVisDRSAnalyzer/       # Modul untuk analisis UV-Vis DRS
+│   ├── __init__.py
+│   ├── gui.py
+│   ├── processing.py
+│   └── plotting.py
+│
+├── FTIRAnalyzer/           # Modul untuk analisis FTIR
+│   ├── __init__.py
+│   ├── gui.py
+│   ├── processing.py
+│   └── plotting.py
+│
+├── XRDAnalyzer/            # Modul untuk analisis XRD
+│   ├── __init__.py
+│   ├── gui.py
+│   ├── processing.py
+│   └── plotting.py
+│
+└── main.py                 # Aplikasi utama yang mengintegrasikan semua modul
