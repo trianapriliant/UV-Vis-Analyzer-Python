@@ -1,11 +1,11 @@
 import os
+import datetime
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from tkinter import Tk, Label, Entry, Button, filedialog, messagebox, StringVar, Frame, Radiobutton, IntVar, Scale, Checkbutton, Menu
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 from scipy.optimize import curve_fit
-
 
 class UVVisAnalyzer:
     def __init__(self, root):
@@ -30,6 +30,12 @@ class UVVisAnalyzer:
         analisis_menu.add_command(label="Kinetika Degradasi", command=self.kinetika_degradasi)
         analisis_menu.add_command(label="Konsentrasi Relatif", command=self.konsentrasi_relatif)
 
+        # Menu Eksport
+        eksport_menu = Menu(menu_bar, tearoff=0)
+        menu_bar.add_cascade(label="Eksport", menu=eksport_menu)
+        eksport_menu.add_command(label="Eksport CSV", command=self.eksport_csv)
+        eksport_menu.add_command(label="Eksport Gambar", command=self.eksport_gambar)
+        
         # Frame untuk input
         input_frame = Frame(self.root)
         input_frame.grid(row=0, column=0, padx=10, pady=5, sticky="w")
@@ -153,9 +159,6 @@ class UVVisAnalyzer:
             return
 
         alat_terpilih = self.alat_var.get()
-        output_folder = "./GabunganAbsSampel"
-        os.makedirs(output_folder, exist_ok=True)
-
         file_paths = [os.path.join(folder_path, file) for file in os.listdir(folder_path) if file.endswith('.csv')]
         if not file_paths:
             messagebox.showinfo("Info", "Tidak ada file CSV ditemukan di folder: " + folder_path)
@@ -189,15 +192,6 @@ class UVVisAnalyzer:
             except Exception as e:
                 messagebox.showerror("Error", f"Gagal membaca file {file_path}: {str(e)}")
                 return
-
-        result = self.data_frames[0][['Nomor', 'Lambda']].copy()
-        for i, df in enumerate(self.data_frames):
-            result[f"Abs {sample_names[i]}"] = df['Absorbansi']
-            result[f"Trans {sample_names[i]}"] = df['Transmitansi']
-
-        output_file = os.path.join(output_folder, "AbsSampel.csv")
-        result.to_csv(output_file, index=False)
-        messagebox.showinfo("Sukses", f"File berhasil disimpan sebagai {output_file}")
 
         # Hitung nilai degradasi
         abs_max_values = [df['Absorbansi'].max() for df in self.data_frames]
@@ -335,7 +329,53 @@ class UVVisAnalyzer:
         self.toolbar.update()
         self.toolbar.pack()
 
+    def eksport_csv(self):
+        if self.data_frames is None:
+            messagebox.showerror("Error", "Tidak ada data yang diproses! Harap proses data terlebih dahulu.")
+            return
 
+        # Membuat DataFrame gabungan
+        result = self.data_frames[0][['Nomor', 'Lambda']].copy()
+        sample_names = self.sample_names_var.get().split(',')
+        sample_names = [name.strip() for name in sample_names if name.strip()]
+        for i, df in enumerate(self.data_frames):
+            result[f"Abs {sample_names[i]}"] = df['Absorbansi']
+            result[f"Trans {sample_names[i]}"] = df['Transmitansi']
+
+        # Meminta pengguna memilih lokasi penyimpanan
+        file_path = filedialog.asksaveasfilename(
+            defaultextension=".csv",
+            filetypes=[("CSV Files", "*.csv")],
+            title="Simpan File CSV"
+        )
+        if not file_path:
+            return  # Pengguna membatalkan dialog
+
+        try:
+            result.to_csv(file_path, index=False)
+            messagebox.showinfo("Sukses", f"File CSV berhasil disimpan di: {file_path}")
+        except Exception as e:
+            messagebox.showerror("Error", f"Gagal menyimpan file CSV: {str(e)}")
+
+    def eksport_gambar(self):
+        if self.canvas is None:
+            messagebox.showerror("Error", "Tidak ada grafik yang ditampilkan! Harap proses data terlebih dahulu.")
+            return
+
+        # Meminta pengguna memilih lokasi penyimpanan
+        file_path = filedialog.asksaveasfilename(
+            defaultextension=".png",
+            filetypes=[("PNG Files", "*.png")],
+            title="Simpan Gambar Grafik"
+        )
+        if not file_path:
+            return  # Pengguna membatalkan dialog
+
+        try:
+            self.canvas.figure.savefig(file_path, dpi=300, bbox_inches="tight")
+            messagebox.showinfo("Sukses", f"Gambar grafik berhasil disimpan di: {file_path}")
+        except Exception as e:
+            messagebox.showerror("Error", f"Gagal menyimpan gambar grafik: {str(e)}")
 if __name__ == "__main__":
     root = Tk()
     app = UVVisAnalyzer(root)
